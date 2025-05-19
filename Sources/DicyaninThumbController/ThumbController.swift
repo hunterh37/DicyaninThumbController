@@ -21,10 +21,26 @@ public struct Hand {
 
 struct HandAnchorConverter {
     static func convert(_ anchor: HandAnchor) -> Hand {
-        let thumbTip = anchor.handSkeleton?.joint(.thumbTip)?.position
-        let indexMCP = anchor.handSkeleton?.joint(.indexFingerMCP)?.position
+        guard let handSkeleton = anchor.handSkeleton else {
+            return Hand(thumbTip: nil, indexMCP: nil)
+        }
         
-        return Hand(thumbTip: thumbTip, indexMCP: indexMCP)
+        let originTransform = anchor.originFromAnchorTransform
+        
+        let thumbTipJoint = handSkeleton.joint(.thumbTip)
+        let indexMCPJoint = handSkeleton.joint(.indexFingerMCP)
+        
+        let thumbTipTransform = matrix_multiply(originTransform, thumbTipJoint.anchorFromJointTransform)
+        let indexMCPTransform = matrix_multiply(originTransform, indexMCPJoint.anchorFromJointTransform)
+        
+        let thumbTipPos = SIMD3<Float>(thumbTipTransform.columns.3.x,
+                                      thumbTipTransform.columns.3.y,
+                                      thumbTipTransform.columns.3.z)
+        let indexMCPPos = SIMD3<Float>(indexMCPTransform.columns.3.x,
+                                      indexMCPTransform.columns.3.y,
+                                      indexMCPTransform.columns.3.z)
+        
+        return Hand(thumbTip: thumbTipPos, indexMCP: indexMCPPos)
     }
 }
 
@@ -48,6 +64,7 @@ public class ThumbController: ObservableObject {
     
     private func setupHandTracking() {
         ARKitSessionManager.shared.handTrackingUpdates
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] update in
                 guard let self = self else { return }
                 
@@ -94,19 +111,15 @@ public class ThumbController: ObservableObject {
         let scaledVector = normalizedVector * clampedDistance
         
         // Update the state
-        DispatchQueue.main.async {
-            self.direction = scaledVector
-            self.magnitude = clampedDistance / self.maxDistance
-            self.isActive = true
-        }
+        self.direction = scaledVector
+        self.magnitude = clampedDistance / self.maxDistance
+        self.isActive = true
     }
     
     private func resetState() {
-        DispatchQueue.main.async {
-            self.direction = .zero
-            self.magnitude = 0.0
-            self.isActive = false
-        }
+        self.direction = .zero
+        self.magnitude = 0.0
+        self.isActive = false
     }
     
     public func start() async throws {
