@@ -29,7 +29,7 @@ struct HandAnchorConverter {
         let originTransform = anchor.originFromAnchorTransform
         
         let thumbTipJoint = handSkeleton.joint(.thumbTip)
-        let indexMCPJoint = handSkeleton.joint(.indexFingerMCP)
+        let indexMCPJoint = handSkeleton.joint(.indexFingerTip)
         
         let thumbTipTransform = matrix_multiply(originTransform, thumbTipJoint.anchorFromJointTransform)
         let indexMCPTransform = matrix_multiply(originTransform, indexMCPJoint.anchorFromJointTransform)
