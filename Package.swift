@@ -11,11 +11,13 @@ let package = Package(
             name: "DicyaninThumbController",
             targets: ["DicyaninThumbController"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(path: "DicyaninARKitSession")
+    ],
     targets: [
         .target(
-            name: "DicyaninThumbController",
-            dependencies: []),
+            name: "DicyaninHandTracking",
+            dependencies: ["DicyaninARKitSession"]),
         .testTarget(
             name: "DicyaninThumbControllerTests",
             dependencies: ["DicyaninThumbController"]),
