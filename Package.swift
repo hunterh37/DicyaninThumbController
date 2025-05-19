@@ -17,7 +17,7 @@ let package = Package(
     targets: [
         .target(
             name: "DicyaninThumbController",
-            dependencies: ["DicyaninHandSessionManager"]),
+            dependencies: ["DicyaninARKitSession"]),
         .testTarget(
             name: "DicyaninThumbControllerTests",
             dependencies: ["DicyaninThumbController"]),
