@@ -9,17 +9,17 @@ let package = Package(
     products: [
         .library(
             name: "DicyaninThumbController",
-            targets: ["DicyaninHandTracking"]),
+            targets: ["DicyaninThumbController"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/hunterh37/DicyaninARKitSession.git", from: "1.0.0")
+        .package(url: "https://github.com/hunterh37/DicyaninARKitSession.git", from: "0.0.1")
     ],
     targets: [
         .target(
-            name: "DicyaninHandTracking",
+            name: "DicyaninThumbController",
             dependencies: ["DicyaninARKitSession"]),
         .testTarget(
             name: "DicyaninThumbControllerTests",
-            dependencies: ["DicyaninHandTracking"]),
+            dependencies: ["DicyaninThumbController"]),
     ]
 ) 
