@@ -2,10 +2,30 @@ import Foundation
 import simd
 import Combine
 import DicyaninARKitSession
+import RealityKit
 
 public enum HandSide {
     case left
     case right
+}
+
+public struct Hand {
+    public let thumbTip: SIMD3<Float>?
+    public let indexMCP: SIMD3<Float>?
+    
+    public init(thumbTip: SIMD3<Float>?, indexMCP: SIMD3<Float>?) {
+        self.thumbTip = thumbTip
+        self.indexMCP = indexMCP
+    }
+}
+
+struct HandAnchorConverter {
+    static func convert(_ anchor: HandAnchor) -> Hand {
+        let thumbTip = anchor.handSkeleton?.joint(.thumbTip)?.position
+        let indexMCP = anchor.handSkeleton?.joint(.indexFingerMCP)?.position
+        
+        return Hand(thumbTip: thumbTip, indexMCP: indexMCP)
+    }
 }
 
 public class ThumbController: ObservableObject {
@@ -31,9 +51,10 @@ public class ThumbController: ObservableObject {
             .sink { [weak self] update in
                 guard let self = self else { return }
                 
-                let hand = self.handSide == .left ? update.left : update.right
+                let anchor = self.handSide == .left ? update.left : update.right
                 
-                if let hand = hand {
+                if let anchor = anchor {
+                    let hand = HandAnchorConverter.convert(anchor)
                     self.processHandPosition(hand)
                 } else {
                     self.resetState()
