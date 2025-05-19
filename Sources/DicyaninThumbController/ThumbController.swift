@@ -3,6 +3,7 @@ import simd
 import Combine
 import DicyaninARKitSession
 import RealityKit
+import ARKit
 
 public enum HandSide {
     case left
