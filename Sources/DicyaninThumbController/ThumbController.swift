@@ -1,7 +1,7 @@
 import Foundation
 import simd
 import Combine
-import DicyaninHandSessionManager
+import DicyaninARKitSession
 
 public enum HandSide {
     case left
