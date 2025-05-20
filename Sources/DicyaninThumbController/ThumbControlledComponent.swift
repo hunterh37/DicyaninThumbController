@@ -14,10 +14,10 @@ public class ThumbControlledSystem: System {
     private static let query = EntityQuery(where: .has(ThumbControlledComponent.self))
     
     // Required initializer
-    required init(scene: Scene) { }
+    public required init(scene: Scene) { }
     
     // Update method
-    func update(context: SceneUpdateContext) {
+    public func update(context: SceneUpdateContext) {
         for entity in context.entities(
             matching: Self.query,
             updatingSystemWhen: .rendering
