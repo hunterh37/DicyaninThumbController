@@ -15,7 +15,7 @@ A Swift package for visionOS that provides thumb-based joystick control using ha
 
 - visionOS 1.0+
 - Swift 5.9+
-- DicyaninHandSessionManager package
+- [DicyaninARKitSession package](https://github.com/hunterh37/DicyaninARKitSession)
 
 ## Installation
 
