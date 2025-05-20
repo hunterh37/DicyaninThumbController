@@ -64,6 +64,9 @@ public class ThumbController: ObservableObject {
         self.maxDistance = maxDistance
         
         setupHandTracking()
+        
+        ThumbControlledSystem.registerSystem()
+        ThumbControlledComponent.registerComponent()
     }
     
     private func setupHandTracking() {
