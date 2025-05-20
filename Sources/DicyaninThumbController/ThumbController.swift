@@ -55,7 +55,7 @@ public class ThumbController: ObservableObject {
     private let deadzone: Float
     private let maxDistance: Float
     
-    public init(handSide: HandSide, deadzone: Float = 0.1, maxDistance: Float = 0.1) {
+    public init(handSide: HandSide, deadzone: Float = 0.05, maxDistance: Float = 0.15) {
         self.handSide = handSide
         self.deadzone = deadzone
         self.maxDistance = maxDistance
@@ -119,12 +119,15 @@ public class ThumbController: ObservableObject {
         let clampedDistance = min(distance, maxDistance)
         let scaledVector = normalizedVector * clampedDistance
         
+        // Scale the vector to make movement more pronounced
+        let scaledVector2 = scaledVector * 2.0
+        
         print("DEBUG: Normalized vector: \(normalizedVector)")
         print("DEBUG: Clamped distance: \(clampedDistance)")
-        print("DEBUG: Scaled vector: \(scaledVector)")
+        print("DEBUG: Scaled vector: \(scaledVector2)")
         
         // Update the state
-        self.direction = scaledVector
+        self.direction = scaledVector2
         self.magnitude = clampedDistance / self.maxDistance
         self.isActive = true
         
