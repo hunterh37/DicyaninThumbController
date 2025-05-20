@@ -40,7 +40,8 @@ public class ThumbControlledSystem: System {
                 let horizontalMovement = baseMovement.x
                 
                 // Up/down movement (Y axis)
-                let verticalMovement = baseMovement.y
+                // When moving backward, we want to naturally move down as well
+                let verticalMovement = baseMovement.y - (forwardMovement * 0.5) // Add downward bias when moving backward
                 
                 // Create the final movement vector
                 let movement = SIMD3<Float>(
