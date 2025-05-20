@@ -84,24 +84,32 @@ public class ThumbController: ObservableObject {
     private func processHandPosition(_ hand: Hand) {
         // Get the thumb tip position
         guard let thumbTip = hand.thumbTip else {
+            print("DEBUG: No thumb tip position available")
             resetState()
             return
         }
         
         // Get the index finger MCP (knuckle) position as the center point
         guard let indexMCP = hand.indexMCP else {
+            print("DEBUG: No index finger tip position available")
             resetState()
             return
         }
         
+        print("DEBUG: Thumb tip position: \(thumbTip)")
+        print("DEBUG: Index finger tip position: \(indexMCP)")
+        
         // Calculate the vector from the center to the thumb tip
         let vector = thumbTip - indexMCP
+        print("DEBUG: Vector: \(vector)")
         
         // Calculate the magnitude (distance)
         let distance = length(vector)
+        print("DEBUG: Distance: \(distance)")
         
         // Check if we're within the deadzone
         if distance < deadzone {
+            print("DEBUG: Distance below deadzone (\(deadzone))")
             resetState()
             return
         }
@@ -111,13 +119,22 @@ public class ThumbController: ObservableObject {
         let clampedDistance = min(distance, maxDistance)
         let scaledVector = normalizedVector * clampedDistance
         
+        print("DEBUG: Normalized vector: \(normalizedVector)")
+        print("DEBUG: Clamped distance: \(clampedDistance)")
+        print("DEBUG: Scaled vector: \(scaledVector)")
+        
         // Update the state
         self.direction = scaledVector
         self.magnitude = clampedDistance / self.maxDistance
         self.isActive = true
+        
+        print("DEBUG: Final direction: \(self.direction)")
+        print("DEBUG: Final magnitude: \(self.magnitude)")
+        print("DEBUG: Is active: \(self.isActive)")
     }
     
     private func resetState() {
+        print("DEBUG: Resetting state")
         self.direction = .zero
         self.magnitude = 0.0
         self.isActive = false
