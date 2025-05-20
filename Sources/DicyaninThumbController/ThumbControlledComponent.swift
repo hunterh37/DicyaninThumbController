@@ -30,7 +30,14 @@ public class ThumbControlledSystem: System {
                 let magnitude = ThumbController.shared.magnitude
                 
                 // Calculate movement
-                let movement = direction * magnitude * component.movementSpeed * Float(context.deltaTime) * 10.0
+                let baseMovement = direction * magnitude * component.movementSpeed * Float(context.deltaTime) * 2
+                
+                // Create a new vector that preserves X and Z movement but uses Y for vertical movement
+                let movement = SIMD3<Float>(
+                    baseMovement.x,
+                    baseMovement.y,  // Use Y component directly for vertical movement
+                    baseMovement.z
+                )
                 
                 // Apply movement to entity
                 entity.position += movement
@@ -42,6 +49,8 @@ public class ThumbControlledSystem: System {
 // Extension to make it easier to add the component to entities
 public extension Entity {
     func addThumbControl(movementSpeed: Float = 1.0) {
+        ThumbControlledComponent.registerComponent()
+        ThumbControlledSystem.registerSystem()
         self.components[ThumbControlledComponent.self] = ThumbControlledComponent(movementSpeed: movementSpeed)
     }
     
