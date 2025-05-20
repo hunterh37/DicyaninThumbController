@@ -32,11 +32,21 @@ public class ThumbControlledSystem: System {
                 // Calculate movement
                 let baseMovement = direction * magnitude * component.movementSpeed * Float(context.deltaTime) * 2
                 
-                // Create a new vector that preserves X and Z movement but uses Y for vertical movement
+                // Convert the direction into a joystick-like movement vector
+                // Forward/backward movement (Z axis)
+                let forwardMovement = baseMovement.z
+                
+                // Left/right movement (X axis)
+                let horizontalMovement = baseMovement.x
+                
+                // Up/down movement (Y axis)
+                let verticalMovement = baseMovement.y
+                
+                // Create the final movement vector
                 let movement = SIMD3<Float>(
-                    baseMovement.x,
-                    baseMovement.y,  // Use Y component directly for vertical movement
-                    baseMovement.z
+                    horizontalMovement,  // Left/right
+                    verticalMovement,    // Up/down
+                    forwardMovement      // Forward/backward
                 )
                 
                 // Apply movement to entity
