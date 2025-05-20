@@ -9,18 +9,20 @@ public struct ThumbControlledComponent: Component {
     }
 }
 
-public struct ThumbControlledSystem: System {
-    public static var dependencies: [SystemDependency] {
-        [.init(componentType: ThumbControlledComponent.self)]
-    }
+public class ThumbControlledSystem: System {
+    // Define a query to return all entities with ThumbControlledComponent
+    private static let query = EntityQuery(where: .has(ThumbControlledComponent.self))
     
-    public func update(context: SceneUpdateContext) {
-        // Get all entities with ThumbControlledComponent
-        let query = EntityQuery(where: .has(ThumbControlledComponent.self))
-        
-        // Update each entity
-        context.scene.performQuery(query).forEach { entity in
-            guard let component = entity.components[ThumbControlledComponent.self] else { return }
+    // Required initializer
+    required init(scene: Scene) { }
+    
+    // Update method
+    func update(context: SceneUpdateContext) {
+        for entity in context.entities(
+            matching: Self.query,
+            updatingSystemWhen: .rendering
+        ) {
+            guard let component = entity.components[ThumbControlledComponent.self] else { continue }
             
             // Apply movement if active
             if ThumbController.shared.isActive {
