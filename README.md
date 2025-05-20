@@ -9,6 +9,7 @@ A Swift package for visionOS that provides thumb-based joystick control using ha
 - Real-time SIMD3 direction vector output
 - Magnitude control for variable input strength
 - Active state tracking
+- RealityKit ECS component for easy entity control
 
 ## Requirements
 
@@ -27,6 +28,8 @@ dependencies: [
 ```
 
 ## Usage
+
+### Basic Usage
 
 ```swift
 import DicyaninThumbController
@@ -63,13 +66,51 @@ thumbController.$isActive
 thumbController.stop()
 ```
 
+### Using with RealityKit ECS
+
+```swift
+import DicyaninThumbController
+import RealityKit
+
+class MyApp: App {
+    init() {
+        // Start the shared thumb controller
+        Task {
+            try? await ThumbController.shared.start()
+        }
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+
+struct ContentView: View {
+    var body: some View {
+        RealityView { content in
+            // Create an entity to control
+            let entity = ModelEntity(mesh: .generateBox(size: 0.1))
+            entity.model?.materials = [SimpleMaterial(color: .green, isMetallic: false)]
+            
+            // Add thumb control to the entity
+            entity.addThumbControl(movementSpeed: 2.0)
+            
+            // Add the entity to the scene
+            content.add(entity)
+        }
+    }
+}
+```
+
 ## Configuration
 
 The `ThumbController` can be configured with the following parameters:
 
 - `handSide`: Choose between `.left` or `.right` hand
-- `deadzone`: Minimum distance before the controller becomes active (default: 0.1)
-- `maxDistance`: Maximum distance for full magnitude (default: 0.1)
+- `deadzone`: Minimum distance before the controller becomes active (default: 0.02)
+- `maxDistance`: Maximum distance for full magnitude (default: 0.15)
 
 Example with custom configuration:
 
@@ -83,10 +124,10 @@ let thumbController = ThumbController(
 
 ## How It Works
 
-The controller uses the thumb tip position relative to the index finger knuckle (MCP) to create a virtual joystick. The direction is calculated as a normalized vector, and the magnitude is scaled based on the distance between these points.
+The controller uses the thumb tip position relative to the index finger tip to create a virtual joystick. The direction is calculated as a normalized vector, and the magnitude is scaled based on the distance between these points.
 
 - The thumb tip position is used as the joystick position
-- The index finger MCP (knuckle) is used as the center point
+- The index finger tip is used as the center point
 - The vector between these points determines the direction and magnitude
 - A deadzone prevents small movements from triggering the controller
 - The maximum distance parameter limits how far the thumb can move for full magnitude

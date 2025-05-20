@@ -46,6 +46,8 @@ struct HandAnchorConverter {
 }
 
 public class ThumbController: ObservableObject {
+    public static let shared = ThumbController(handSide: .right)
+    
     @Published public private(set) var direction: SIMD3<Float> = .zero
     @Published public private(set) var magnitude: Float = 0.0
     @Published public private(set) var isActive: Bool = false
@@ -137,6 +139,10 @@ public class ThumbController: ObservableObject {
     }
     
     public func start() async throws {
+        // Register the component and system
+        ThumbControlledComponent.registerComponent()
+        ThumbControlledSystem.registerSystem()
+        
         try await ARKitSessionManager.shared.start()
     }
     
