@@ -30,7 +30,7 @@ public class ThumbControlledSystem: System {
                 let magnitude = ThumbController.shared.magnitude
                 
                 // Calculate movement
-                let movement = direction * magnitude * component.movementSpeed * Float(context.deltaTime)
+                let movement = direction * magnitude * component.movementSpeed * Float(context.deltaTime) * 10.0
                 
                 // Apply movement to entity
                 entity.position += movement
