@@ -54,8 +54,9 @@ public class ThumbController: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let deadzone: Float
     private let maxDistance: Float
+    private let scaleFactor: Float = 10.0  // Increased scale factor
     
-    public init(handSide: HandSide, deadzone: Float = 0.05, maxDistance: Float = 0.15) {
+    public init(handSide: HandSide, deadzone: Float = 0.02, maxDistance: Float = 0.15) {
         self.handSide = handSide
         self.deadzone = deadzone
         self.maxDistance = maxDistance
@@ -96,21 +97,18 @@ public class ThumbController: ObservableObject {
             return
         }
         
-        print("DEBUG: Thumb tip position: \(thumbTip)")
-        print("DEBUG: Index finger tip position: \(indexMCP)")
-        
         // Calculate the vector from the center to the thumb tip
         let vector = thumbTip - indexMCP
-        print("DEBUG: Vector: \(vector)")
         
         // Calculate the magnitude (distance)
         let distance = length(vector)
-        print("DEBUG: Distance: \(distance)")
         
         // Check if we're within the deadzone
         if distance < deadzone {
-            print("DEBUG: Distance below deadzone (\(deadzone))")
-            resetState()
+            if isActive {
+                print("DEBUG: Distance below deadzone (\(deadzone))")
+                resetState()
+            }
             return
         }
         
@@ -119,21 +117,16 @@ public class ThumbController: ObservableObject {
         let clampedDistance = min(distance, maxDistance)
         let scaledVector = normalizedVector * clampedDistance
         
-        // Scale the vector to make movement more pronounced
-        let scaledVector2 = scaledVector * 2.0
-        
-        print("DEBUG: Normalized vector: \(normalizedVector)")
-        print("DEBUG: Clamped distance: \(clampedDistance)")
-        print("DEBUG: Scaled vector: \(scaledVector2)")
+        // Apply significant scaling to make movement more pronounced
+        let finalVector = scaledVector * scaleFactor
         
         // Update the state
-        self.direction = scaledVector2
+        self.direction = finalVector
         self.magnitude = clampedDistance / self.maxDistance
         self.isActive = true
         
         print("DEBUG: Final direction: \(self.direction)")
         print("DEBUG: Final magnitude: \(self.magnitude)")
-        print("DEBUG: Is active: \(self.isActive)")
     }
     
     private func resetState() {
