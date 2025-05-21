@@ -75,27 +75,21 @@ public class ThumbController: ObservableObject {
             .sink { [weak self] update in
                 guard let self = self else { return }
                 
-                // Get both hands
-                let rightHand = update.right
-                let leftHand = update.left
-                
-                // Determine which hand to use based on our configuration
-                let targetHand: HandAnchor?
+                // Only process the hand we're configured to track
                 if self.handSide == .right {
-                    // For right hand, prioritize right hand even if left is visible
-                    targetHand = rightHand
+                    if let rightHand = update.right {
+                        let hand = HandAnchorConverter.convert(rightHand)
+                        self.processHandPosition(hand)
+                    } else if self.isActive {
+                        self.resetState()
+                    }
                 } else {
-                    // For left hand, prioritize left hand even if right is visible
-                    targetHand = leftHand
-                }
-                
-                // Only process if we have our target hand
-                if let anchor = targetHand {
-                    let hand = HandAnchorConverter.convert(anchor)
-                    self.processHandPosition(hand)
-                } else if self.isActive {
-                    // Only reset if we were previously active
-                    self.resetState()
+                    if let leftHand = update.left {
+                        let hand = HandAnchorConverter.convert(leftHand)
+                        self.processHandPosition(hand)
+                    } else if self.isActive {
+                        self.resetState()
+                    }
                 }
             }
             .store(in: &cancellables)
