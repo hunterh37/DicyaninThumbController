@@ -89,11 +89,12 @@ public class ThumbController: ObservableObject {
                     targetHand = leftHand
                 }
                 
-                // Process the target hand if available
+                // Only process if we have our target hand
                 if let anchor = targetHand {
                     let hand = HandAnchorConverter.convert(anchor)
                     self.processHandPosition(hand)
-                } else {
+                } else if self.isActive {
+                    // Only reset if we were previously active
                     self.resetState()
                 }
             }
