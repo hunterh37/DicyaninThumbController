@@ -71,30 +71,21 @@ thumbController.stop()
 ```swift
 import DicyaninThumbController
 import RealityKit
-
-class MyApp: App {
-    init() {
-        // Start the shared thumb controller
-        Task {
-            try? await ThumbController.shared.start()
-        }
-    }
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
-}
+import SwiftUI
 
 struct ContentView: View {
     var body: some View {
         RealityView { content in
+            // Start the shared thumb controller
+            Task {
+                try? await ThumbController.shared.start()
+            }
+            
             // Create an entity to control
             let entity = ModelEntity(mesh: .generateBox(size: 0.1))
             entity.model?.materials = [SimpleMaterial(color: .green, isMetallic: false)]
             
-            // Add thumb control to the entity
+            // Add thumb control to the entity with a movement speed of 2.0
             entity.addThumbControl(movementSpeed: 2.0)
             
             // Add the entity to the scene
@@ -102,6 +93,26 @@ struct ContentView: View {
         }
     }
 }
+```
+
+The ECS integration provides automatic movement control for entities. The `ThumbControlledComponent` will:
+- Track the thumb position relative to the index finger
+- Convert thumb movements into entity movement
+- Apply movement speed scaling
+- Handle deadzone and maximum distance constraints
+
+You can adjust the movement speed when adding the component:
+```swift
+// Slower movement
+entity.addThumbControl(movementSpeed: 1.0)
+
+// Faster movement
+entity.addThumbControl(movementSpeed: 3.0)
+```
+
+To remove thumb control from an entity:
+```swift
+entity.removeThumbControl()
 ```
 
 ## Configuration
