@@ -2,6 +2,10 @@
 
 A Swift package for visionOS that provides thumb-based joystick control using hand tracking. This package uses the DicyaninHandSessionManager to track hand positions and converts thumb movements into a virtual joystick input.
 
+![DicyaninThumbControllerGif4](https://github.com/user-attachments/assets/d0d9fef3-cdb1-4b9b-9209-c8b4ceefa032)
+
+
+
 ## Features
 
 - Left or right hand support
